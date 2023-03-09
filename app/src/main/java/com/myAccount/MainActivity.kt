@@ -1,5 +1,6 @@
-package com.notificationservicetest
+package com.myAccount
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
@@ -7,10 +8,17 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import com.notificationservicetest.databinding.ActivityMainBinding
+import androidx.core.app.NotificationCompat
+import com.myAccount.databinding.ActivityMainBinding
+import com.myAccount.event.EventUtils
+import com.myAccount.event.MessageEvent
+import com.myAccount.utils.Utils
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,6 +46,8 @@ class MainActivity : AppCompatActivity() {
         updateTextPermissionColor(checkNotificationListenerServiceAccess())
     }
 
+
+
     /**
      * Handles click events on buttons.
      */
@@ -54,11 +64,7 @@ class MainActivity : AppCompatActivity() {
      * @return : access status
      */
     private fun checkNotificationListenerServiceAccess(): Boolean {
-        // Get component "NotificationListenerCustom" service
         val componentService = ComponentName(this, NotificationListenerCustom::class.java)
-
-        // Gets applications using notification settings access
-        // getString returns format : [package name]/[Component name]
         val apps = Settings.Secure.getString(contentResolver, TABLE_NAME)
 
         return apps.contains(componentService.flattenToString())
@@ -79,5 +85,26 @@ class MainActivity : AppCompatActivity() {
         }
         if (status) updateWithResources(R.color.green, R.string.notification_access_granted)
         else updateWithResources(R.color.red, R.string.notification_access_denied)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventUtils.registerSafely(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventUtils.unRegisterSafely(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onDataEvent(dataEvent: MessageEvent){
+//        Toast.makeText(applicationContext, Utils.getAppName(dataEvent.sbn.packageName), Toast
+//            .LENGTH_SHORT).show()
+        binding.appName.text = Utils.getAppName(dataEvent.sbn.packageName)
+        binding.postTime.text = Utils.convertUnixTimestampToTime(dataEvent.sbn.postTime)
+        binding.title.text = dataEvent.sbn.notification.extras.getCharSequence("android.title")
+        binding.text.text = dataEvent.sbn.notification.extras.getCharSequence("android.text")
+
     }
 }

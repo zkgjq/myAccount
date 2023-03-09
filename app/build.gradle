@@ -7,7 +7,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.notificationservicetest"
+        applicationId 'com.myAccount'
         minSdk 21
         targetSdk 30
         versionCode 1
@@ -44,4 +44,5 @@ dependencies {
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation  "org.greenrobot:eventbus:3.3.1"
 }
