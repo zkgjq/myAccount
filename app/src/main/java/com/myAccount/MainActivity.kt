@@ -8,14 +8,18 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.service.notification.StatusBarNotification
 import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
+import com.myAccount.callback.NotifyHelper
+import com.myAccount.callback.NotifyListener
 import com.myAccount.databinding.ActivityMainBinding
 import com.myAccount.event.EventUtils
 import com.myAccount.event.MessageEvent
+import com.myAccount.event.ServiceCreateEvent
 import com.myAccount.utils.Utils
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -39,6 +43,24 @@ class MainActivity : AppCompatActivity() {
                 as NotificationManager
         notificationCreator = NotificationCreator(this)
         handleButtons()
+        handleNotify()
+    }
+
+    private fun handleNotify(){
+        NotifyHelper.setNotifyListener(object :NotifyListener{
+            override fun onReceiveMessage(sbn: StatusBarNotification) {
+                binding.appName.text = Utils.getAppName(sbn.packageName)
+                binding.postTime.text = Utils.convertUnixTimestampToTime(sbn.postTime)
+                binding.title.text = sbn.notification.extras.getCharSequence("android.title")
+                binding.text.text = sbn.notification.extras.getCharSequence("android.text")
+
+            }
+
+            override fun onRemoveMessage(sbn: StatusBarNotification) {
+
+            }
+
+        })
     }
 
     override fun onResume() {
@@ -101,10 +123,17 @@ class MainActivity : AppCompatActivity() {
     fun onDataEvent(dataEvent: MessageEvent){
 //        Toast.makeText(applicationContext, Utils.getAppName(dataEvent.sbn.packageName), Toast
 //            .LENGTH_SHORT).show()
-        binding.appName.text = Utils.getAppName(dataEvent.sbn.packageName)
-        binding.postTime.text = Utils.convertUnixTimestampToTime(dataEvent.sbn.postTime)
-        binding.title.text = dataEvent.sbn.notification.extras.getCharSequence("android.title")
-        binding.text.text = dataEvent.sbn.notification.extras.getCharSequence("android.text")
+//        binding.appName.text = Utils.getAppName(dataEvent.sbn.packageName)
+//        binding.postTime.text = Utils.convertUnixTimestampToTime(dataEvent.sbn.postTime)
+//        binding.title.text = dataEvent.sbn.notification.extras.getCharSequence("android.title")
+//        binding.text.text = dataEvent.sbn.notification.extras.getCharSequence("android.text")
 
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onServiceCreateEvent(serviceCreateEvent: ServiceCreateEvent){
+        binding.serviceState.apply {
+            setText(R.string.service_open)
+            setTextColor(resources.getColor(R.color.green))
+        }
     }
 }

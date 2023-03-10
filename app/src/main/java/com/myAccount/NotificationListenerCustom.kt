@@ -5,11 +5,15 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.IBinder
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import com.myAccount.callback.NotifyHelper
 import com.myAccount.event.MessageEvent
+import com.myAccount.event.ServiceCreateEvent
 import com.myAccount.utils.Utils
 import org.greenrobot.eventbus.EventBus
 
@@ -42,12 +46,18 @@ class NotificationListenerCustom: NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         super.onNotificationPosted(sbn)
         Log.d("NOTIFICATION_SERVICE", "NOTIFICATION POSTED")
-        sbn?.let { displayOnLogNotificationInfo(it) }
+        sbn?.let {
+            displayOnLogNotificationInfo(it)
+            NotifyHelper.onReceive(it)
+        }
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification?) {
         super.onNotificationRemoved(sbn)
         Log.d("NOTIFICATION_SERVICE", "NOTIFICATION REMOVED")
+        sbn?.let {
+            NotifyHelper.onRemoved(it)
+        }
     }
 
     /**
@@ -70,6 +80,18 @@ class NotificationListenerCustom: NotificationListenerService() {
 
     override fun onDestroy() {
         super.onDestroy()
-        stopForeground(true)
+        Log.d("NOTIFICATION", "onDestroy: ")
+
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        Log.d("NOTIFICATION", "onCreate: ")
+        Toast.makeText(applicationContext, "监听服务已打开", Toast.LENGTH_SHORT).show()
+        EventBus.getDefault().post(ServiceCreateEvent())
+    }
+
+    override fun onBind(intent: Intent?): IBinder? {
+        return super.onBind(intent)
     }
 }
