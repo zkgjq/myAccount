@@ -74,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         binding.postTime.text = Utils.convertUnixTimestampToTime(sbn.postTime)
         binding.title.text = sbn.notification.extras.getCharSequence("android.title")
         binding.text.text = sbn.notification.extras.getCharSequence("android.text")
-        executevibrator(sbn.notification.extras.getCharSequence("android.title") as String)
 
       }
 
@@ -85,15 +84,7 @@ class MainActivity : AppCompatActivity() {
     })
   }
 
-  @RequiresApi(Build.VERSION_CODES.O)
-  private fun executevibrator(name: String) {
-    val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
-    if (vibrator.hasVibrator() && (name == "琼")) {
-      vibrator.vibrate(VibrationEffect.createOneShot(2000, VibrationEffect.DEFAULT_AMPLITUDE));
-      //震动5秒
-    }
 
-  }
 
   override fun onResume() {
     super.onResume()
