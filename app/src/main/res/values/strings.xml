@@ -1,16 +1,16 @@
 <resources>
-    <string name="app_name">myAccount</string>
-    <!-- AndroidManifest.xml -->
-    <string name="service_name">我的账单</string>
-    <!-- activity_main.xml -->
-    <string name="btn_request_access">获取权限</string>
-    <string name="btn_stop_service">STOP SERVICE</string>
-    <string name="btn_notification_test">模拟通知</string>
-    <string name="notification_access_denied">监听权限未开通</string>
-    <string name="notification_access_granted">监听权限已开通</string>
-    <string name="service_close">监听服务未打开</string>
-    <string name="service_open">监听服务已打开</string>
-    <!-- NotificationCreator.kt -->
-    <string name="notification_title">测试title</string>
-    <string name="notification_message">测试message</string>
+  <string name="app_name">myAccount</string>
+  <!-- AndroidManifest.xml -->
+  <string name="service_name">我的账单</string>
+  <!-- activity_main.xml -->
+  <string name="btn_request_access">获取权限</string>
+  <string name="btn_stop_service">STOP SERVICE</string>
+  <string name="btn_notification_test">模拟通知</string>
+  <string name="notification_access_denied">监听权限未开通</string>
+  <string name="notification_access_granted">监听权限已开通</string>
+  <string name="service_close">监听服务未打开</string>
+  <string name="service_open">监听服务已打开</string>
+  <!-- NotificationCreator.kt -->
+  <string name="notification_title">测试title</string>
+  <string name="notification_message">测试message</string>
 </resources>

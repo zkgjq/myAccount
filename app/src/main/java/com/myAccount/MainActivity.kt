@@ -33,6 +33,10 @@ class MainActivity : AppCompatActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
+    supportActionBar!!.hide()
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      window.statusBarColor = getColor(R.color.light_green)
+    }
     binding = ActivityMainBinding.inflate(layoutInflater).also { setContentView(it.root) }
     manager = getSystemService(Context.NOTIFICATION_SERVICE)
         as NotificationManager
@@ -98,6 +102,9 @@ class MainActivity : AppCompatActivity() {
 //    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 //    val currentDateTime: String = dateFormat.format(Date())
 //    Toast.makeText(applicationContext, currentDateTime, Toast.LENGTH_SHORT).show()
+    binding.btnGo.setOnClickListener {
+      startActivity(Intent(this, AccountActivity::class.java))
+    }
 
   }
 

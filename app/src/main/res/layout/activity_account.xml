@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context=".AccountActivity">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/expense_card"
+    android:layout_width="374dp"
+    android:layout_height="202dp"
+    android:layout_marginTop="30dp"
+    android:background="@drawable/card"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+      android:id="@+id/title_1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="20dp"
+      android:layout_marginTop="25dp"
+      android:text="总支出"
+      android:textAlignment="center"
+      android:textColor="@color/white"
+      android:textFontWeight="600"
+      android:textSize="16sp"
+      app:layout_constraintLeft_toLeftOf="@id/expense_card"
+      app:layout_constraintTop_toTopOf="@id/expense_card"></TextView>
+
+    <TextView
+      android:id="@+id/total_expense"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginLeft="20dp"
+      android:layout_marginTop="8dp"
+      android:text="¥ 0.00"
+      android:textAlignment="center"
+      android:textColor="@color/white"
+      android:textFontWeight="700"
+      android:textSize="30sp"
+      app:layout_constraintLeft_toLeftOf="@id/expense_card"
+      app:layout_constraintTop_toBottomOf="@id/title_1"></TextView>
+
+  </androidx.constraintlayout.widget.ConstraintLayout>
+
+  <EditText
+    android:id="@+id/inputText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="100dp"
+    android:hint="请输入金额"
+    android:visibility="invisible"
+    android:textAlignment="center"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/expense_card"></EditText>
+
+  <android.widget.Button
+    android:id="@+id/ensureBtn"
+    android:layout_width="80dp"
+    android:layout_height="40dp"
+    android:layout_marginTop="3dp"
+    android:background="@drawable/btn"
+    android:text="确认"
+    android:textColor="@color/white"
+    android:textSize="18sp"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/inputText"></android.widget.Button>
+
+  <android.widget.Button
+    android:id="@+id/add_btn"
+    android:layout_width="100dp"
+    android:layout_height="50dp"
+    android:layout_marginBottom="100dp"
+    android:background="@drawable/btn"
+    android:text="记一笔"
+    android:textColor="@color/white"
+    android:textSize="18sp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"></android.widget.Button>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
