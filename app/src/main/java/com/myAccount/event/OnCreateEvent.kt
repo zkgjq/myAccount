@@ -1,4 +1,4 @@
 package com.myAccount.event
 
-class ServiceCreateEvent {
+class OnCreateEvent {
 }

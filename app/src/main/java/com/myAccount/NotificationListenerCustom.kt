@@ -1,8 +1,6 @@
 package com.myAccount
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
+import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
@@ -10,10 +8,9 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
+import androidx.annotation.RequiresApi
 import com.myAccount.callback.NotifyHelper
-import com.myAccount.event.MessageEvent
-import com.myAccount.event.ServiceCreateEvent
+import com.myAccount.event.OnListenerStateEvent
 import com.myAccount.utils.Utils
 import org.greenrobot.eventbus.EventBus
 
@@ -22,33 +19,31 @@ import org.greenrobot.eventbus.EventBus
  */
 class NotificationListenerCustom: NotificationListenerService() {
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("NOTIFICATION", "onStartCommand")
-//        init()
+        requestRebind(ComponentName(applicationContext, this.javaClass))
         return START_STICKY
     }
 
-    private fun init(){
-        val channelId = "ForegroundServiceChannel"
-        val channelName = "Foreground Service Channel"
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_DEFAULT)
-            notificationManager.createNotificationChannel(channel)
-        }
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setContentTitle("My App is running in the foreground")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentText("This is my foreground service notification")
-        startForeground(110, notificationBuilder.build())
-    }
 
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         super.onNotificationPosted(sbn)
         Log.d("NOTIFICATION_SERVICE", "NOTIFICATION POSTED")
         sbn?.let {
+            clearUnnecessaryMessage(it)
+
             displayOnLogNotificationInfo(it)
             NotifyHelper.onReceive(it)
+        }
+    }
+
+    private fun clearUnnecessaryMessage(sbn: StatusBarNotification?){
+        val appName = sbn?.let { Utils.getAppName(it.packageName) }
+        if(!appName.equals("微信") && !appName.equals("QQ")&&!appName.equals("Kim")){
+            if (sbn != null) {
+                cancelNotification(sbn.key)
+            }
         }
     }
 
@@ -65,9 +60,9 @@ class NotificationListenerCustom: NotificationListenerService() {
      */
     private fun displayOnLogNotificationInfo(sbn: StatusBarNotification) {
         val appName = Utils.getAppName(sbn.packageName)
-        if(appName == "QQ" || appName == "微信" || appName == "com.myAccount"){
-            EventBus.getDefault().post(MessageEvent(sbn))
-        }
+//        if(appName == "QQ" || appName == "微信" || appName == "com.myAccount"){
+//            EventBus.getDefault().post(MessageEvent(sbn))
+//        }
         Log.i("NOTIFICATION_SERVICE", "--------------------------------------------------")
         Log.i("NOTIFICATION_SERVICE", "Package name : ${sbn.packageName}")
         Log.i("NOTIFICATION_SERVICE", "Post time : ${sbn.postTime}")
@@ -87,11 +82,24 @@ class NotificationListenerCustom: NotificationListenerService() {
     override fun onCreate() {
         super.onCreate()
         Log.d("NOTIFICATION", "onCreate: ")
+    }
+
+    override fun onListenerConnected() {
+        super.onListenerConnected()
+        Log.d("NOTIFICATION", "onListenerConnected: ")
         Toast.makeText(applicationContext, "监听服务已打开", Toast.LENGTH_SHORT).show()
-        EventBus.getDefault().post(ServiceCreateEvent())
+        EventBus.getDefault().post(OnListenerStateEvent(1))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    override fun onListenerDisconnected() {
+        super.onListenerDisconnected()
+        Log.d("NOTIFICATION", "onListenerDisconnected: ")
+        EventBus.getDefault().post(OnListenerStateEvent(0))
     }
 
     override fun onBind(intent: Intent?): IBinder? {
         return super.onBind(intent)
     }
+
 }
