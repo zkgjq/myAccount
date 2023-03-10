@@ -95,7 +95,6 @@ class NotificationListenerCustom: NotificationListenerService() {
     override fun onListenerDisconnected() {
         super.onListenerDisconnected()
         Log.d("NOTIFICATION", "onListenerDisconnected: ")
-        EventBus.getDefault().post(OnListenerStateEvent(0))
     }
 
     override fun onBind(intent: Intent?): IBinder? {

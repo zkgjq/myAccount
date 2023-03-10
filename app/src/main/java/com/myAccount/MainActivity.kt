@@ -7,10 +7,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.provider.Settings
 import android.service.notification.StatusBarNotification
+import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
@@ -23,6 +22,8 @@ import com.myAccount.event.OnListenerStateEvent
 import com.myAccount.utils.Utils
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -101,6 +102,9 @@ class MainActivity : AppCompatActivity() {
       startActivity(intentAccess)
     }
     binding.buttonNotification.setOnClickListener { notificationCreator.createNotification() }
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    val currentDateTime: String = dateFormat.format(Date())
+    Toast.makeText(applicationContext, currentDateTime, Toast.LENGTH_SHORT).show()
 
   }
 
