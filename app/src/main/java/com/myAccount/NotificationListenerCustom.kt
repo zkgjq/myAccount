@@ -1,18 +1,14 @@
 package com.myAccount
 
-import android.content.ComponentName
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.myAccount.callback.NotifyHelper
-import com.myAccount.event.OnListenerStateEvent
 import com.myAccount.utils.Utils
-import org.greenrobot.eventbus.EventBus
 
 /**
  * Subclass of [NotificationListenerService] used to catch post/remove notification events.
@@ -22,7 +18,6 @@ class NotificationListenerCustom: NotificationListenerService() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("NOTIFICATION", "onStartCommand")
-        requestRebind(ComponentName(applicationContext, this.javaClass))
         return START_STICKY
     }
 
@@ -87,8 +82,6 @@ class NotificationListenerCustom: NotificationListenerService() {
     override fun onListenerConnected() {
         super.onListenerConnected()
         Log.d("NOTIFICATION", "onListenerConnected: ")
-        Toast.makeText(applicationContext, "监听服务已打开", Toast.LENGTH_SHORT).show()
-        EventBus.getDefault().post(OnListenerStateEvent(1))
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
