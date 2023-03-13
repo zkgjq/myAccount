@@ -11,8 +11,9 @@
         <entry key="app/src/main/res/drawable/card_shape.xml" value="0.249" />
         <entry key="app/src/main/res/drawable/custom_spinnner.xml" value="0.3885" />
         <entry key="app/src/main/res/drawable/selector_spinner.xml" value="0.3885" />
-        <entry key="app/src/main/res/layout/activity_account.xml" value="0.446734110514323" />
+        <entry key="app/src/main/res/layout/activity_account.xml" value="0.39176432291666674" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.3211781819661458" />
+        <entry key="app/src/main/res/layout/expense_item.xml" value="0.3078125" />
         <entry key="app/src/main/res/layout/my_spinner_item.xml" value="0.55" />
         <entry key="app/src/main/res/layout/spinner_item.xml" value="0.55" />
       </map>

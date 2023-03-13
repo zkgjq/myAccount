@@ -1,6 +1,12 @@
 package com.myAccount;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
@@ -20,6 +26,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.myAccount.adapter.Expense;
+import com.myAccount.adapter.ExpenseAdapter;
 import com.myAccount.utils.SpUtils;
 import com.myAccount.utils.Utils;
 
@@ -30,6 +38,7 @@ public class AccountActivity extends AppCompatActivity {
   Button mRecordBtn;
   Button mCLearBtn;
   Spinner mSpinner;
+  RecyclerView mRecyclerView;
 
   String total = "0.00";
   String food = "0.00";
@@ -37,10 +46,12 @@ public class AccountActivity extends AppCompatActivity {
   String traffic = "0.00";
   String daily = "0.00";
   String other = "0.00";
+  List<String> dataset = new ArrayList<>();
   String[] classes = {"food", "taobao", "traffic", "daily", "other"};
   String currentItem = "吃饭";
   String currentNum = "0.00";
   InputMethodManager imm;
+  ExpenseAdapter expenseAdapter;
 
 
   @Override
@@ -63,18 +74,20 @@ public class AccountActivity extends AppCompatActivity {
     mRecordBtn = findViewById(R.id.add_btn);
     mCLearBtn = findViewById(R.id.clearBtn);
     mSpinner = findViewById(R.id.classes_spinner);
+    mRecyclerView = findViewById(R.id.list);
   }
 
   private void init() {
     initView();
     imm =
         (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
   }
 
   private void initView() {
     total = SpUtils.INSTANCE.getString("total", getApplicationContext());
     mTotalExpense.setText("¥" + total);
-    food = SpUtils.INSTANCE.getString("daily", getApplicationContext());
+    food = SpUtils.INSTANCE.getString("food", getApplicationContext());
     taobao = SpUtils.INSTANCE.getString("taobao", getApplicationContext());
     traffic = SpUtils.INSTANCE.getString("traffic", getApplicationContext());
     daily = SpUtils.INSTANCE.getString("daily", getApplicationContext());
@@ -82,7 +95,13 @@ public class AccountActivity extends AppCompatActivity {
     Toast.makeText(this,
         "food:" + food + "\n" + "taobao:" + taobao + "\n" + "traffic:" + traffic + "\n" + "daily:" +
             daily + "\n" + "other:" + other, Toast.LENGTH_SHORT).show();
+    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+    mRecyclerView.setLayoutManager(linearLayoutManager);
+    expenseAdapter = new ExpenseAdapter(dataset);
+    mRecyclerView.setAdapter(expenseAdapter);
+
   }
+
 
   private void handleClick() {
 
@@ -110,6 +129,10 @@ public class AccountActivity extends AppCompatActivity {
               Toast.LENGTH_SHORT).show();
           mTotalExpense.setText("¥" + total);
           SpUtils.INSTANCE.putString(currentItem, currentNum, getApplicationContext());
+          String detail = Utils.INSTANCE.getCurrentTime() + " " + currentItem + " ¥" + currentNum;
+          SpUtils.INSTANCE.putString("detail",detail, getApplicationContext() );
+          dataset.add(detail);
+          expenseAdapter.notifyDataSetChanged();
           if (imm != null) {
             mEditText.setText("");
             mEditText.setVisibility(View.INVISIBLE);
@@ -130,7 +153,7 @@ public class AccountActivity extends AppCompatActivity {
         total = "0.00";
         mTotalExpense.setText("¥" + total);
         SpUtils.INSTANCE.putString("total", "0.00", getApplicationContext());
-        for(int i = 0; i < classes.length; i++){
+        for (int i = 0; i < classes.length; i++) {
           SpUtils.INSTANCE.putString(classes[i], "0.00", getApplicationContext());
         }
       }
@@ -145,14 +168,13 @@ public class AccountActivity extends AppCompatActivity {
 
       @Override
       public void onNothingSelected(AdapterView<?> adapterView) {
+//        currentItem = "food";
 
       }
     });
 
 
   }
-
-
 
 
 }

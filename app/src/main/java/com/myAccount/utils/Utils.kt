@@ -42,4 +42,10 @@ object Utils {
   fun submitEnabled(inputText: String?): Boolean {
     return inputText != null && inputText.isNotEmpty() && isNumberText(inputText)
   }
+
+  fun getCurrentTime(): String {
+    val currentTime = System.currentTimeMillis()
+    val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+    return dateFormat.format(Date(currentTime))
+  }
 }
