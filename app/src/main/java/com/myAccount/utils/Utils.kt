@@ -5,6 +5,7 @@ import java.util.*
 
 object Utils {
 
+
   private val packageNameMap = mutableMapOf(
     "com.ss.android.ugc.aweme" to "抖音",
     "com.tencent.mm" to "微信",
@@ -20,10 +21,25 @@ object Utils {
     return dateFormat.format(Date(unixTimestamp))
   }
 
-  fun getAppName(packageName:String): String? {
-    if(packageNameMap[packageName] == null){
+  fun getAppName(packageName: String): String? {
+    if (packageNameMap[packageName] == null) {
       return packageName
     }
     return packageNameMap[packageName]
+  }
+
+  fun addStrings(str1: String, str2:String): String {
+    return (str1.toDouble()+str2.toDouble()).toString()
+  }
+  private fun isNumberText(text: String): Boolean {
+    return try {
+      text.toDouble()
+      true
+    } catch (e: NumberFormatException) {
+      false
+    }
+  }
+  fun submitEnabled(inputText: String?): Boolean {
+    return inputText != null && inputText.isNotEmpty() && isNumberText(inputText)
   }
 }

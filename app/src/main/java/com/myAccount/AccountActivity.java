@@ -6,16 +6,42 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.myAccount.utils.SpUtils;
+import com.myAccount.utils.Utils;
 
 public class AccountActivity extends AppCompatActivity {
-   String totalExpense = "";
+  TextView mTotalExpense;
+  EditText mEditText;
+  Button mEnsureBtn;
+  Button mRecordBtn;
+  Button mCLearBtn;
+  Spinner mSpinner;
+
+  String total = "0.00";
+  String food = "0.00";
+  String taobao = "0.00";
+  String traffic = "0.00";
+  String daily = "0.00";
+  String other = "0.00";
+  String[] classes = {"food", "taobao", "traffic", "daily", "other"};
+  String currentItem = "吃饭";
+  String currentNum = "0.00";
+  InputMethodManager imm;
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -25,34 +51,108 @@ public class AccountActivity extends AppCompatActivity {
       getWindow().setStatusBarColor(getColor(R.color.light_green));
     }
     setContentView(R.layout.activity_account);
-    handleButton();
+    doBindView();
+    init();
+    handleClick();
   }
 
-  private void handleButton() {
-    Button addBtn = findViewById(R.id.add_btn);
-    addBtn.setOnClickListener(new View.OnClickListener() {
+  private void doBindView() {
+    mTotalExpense = findViewById(R.id.total_expense);
+    mEditText = findViewById(R.id.inputText);
+    mEnsureBtn = findViewById(R.id.ensureBtn);
+    mRecordBtn = findViewById(R.id.add_btn);
+    mCLearBtn = findViewById(R.id.clearBtn);
+    mSpinner = findViewById(R.id.classes_spinner);
+  }
+
+  private void init() {
+    initView();
+    imm =
+        (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+  }
+
+  private void initView() {
+    total = SpUtils.INSTANCE.getString("total", getApplicationContext());
+    mTotalExpense.setText("¥" + total);
+    food = SpUtils.INSTANCE.getString("daily", getApplicationContext());
+    taobao = SpUtils.INSTANCE.getString("taobao", getApplicationContext());
+    traffic = SpUtils.INSTANCE.getString("traffic", getApplicationContext());
+    daily = SpUtils.INSTANCE.getString("daily", getApplicationContext());
+    other = SpUtils.INSTANCE.getString("other", getApplicationContext());
+    Toast.makeText(this,
+        "food:" + food + "\n" + "taobao:" + taobao + "\n" + "traffic:" + traffic + "\n" + "daily:" +
+            daily + "\n" + "other:" + other, Toast.LENGTH_SHORT).show();
+  }
+
+  private void handleClick() {
+
+    mRecordBtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(
-            Context.INPUT_METHOD_SERVICE);
-        EditText editText = findViewById(R.id.inputText);
-        Button ensureBrn = findViewById(R.id.ensureBtn);
         if (imm != null) {
-          editText.setVisibility(View.VISIBLE);
-          ensureBrn.setVisibility(View.VISIBLE);
-          ensureBrn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-              TextView total = findViewById(R.id.total_expense);
-              totalExpense = editText.getText().toString();
-              total.setText("¥ "+totalExpense);
-            }
-          });
-          editText.requestFocus();
-          imm.showSoftInput(editText, 0);
+          mEditText.setVisibility(View.VISIBLE);
+          mEnsureBtn.setVisibility(View.VISIBLE);
+          mSpinner.setVisibility(View.VISIBLE);
+          mEditText.requestFocus();
+          imm.showSoftInput(mEditText, 0);
         }
       }
     });
 
+    mEnsureBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        currentNum = mEditText.getText().toString();
+        if (Utils.INSTANCE.submitEnabled(currentNum)) {
+          total = Utils.INSTANCE.addStrings(total, currentNum);
+          SpUtils.INSTANCE.putString("total", total, getApplicationContext());
+          Toast.makeText(AccountActivity.this, "cash:" + currentNum + " class: " + currentItem,
+              Toast.LENGTH_SHORT).show();
+          mTotalExpense.setText("¥" + total);
+          SpUtils.INSTANCE.putString(currentItem, currentNum, getApplicationContext());
+          if (imm != null) {
+            mEditText.setText("");
+            mEditText.setVisibility(View.INVISIBLE);
+            mEnsureBtn.setVisibility(View.INVISIBLE);
+            mSpinner.setVisibility(View.INVISIBLE);
+            imm.hideSoftInputFromWindow(mEditText.getWindowToken(), 0);
+          }
+        } else {
+          Toast.makeText(AccountActivity.this, "输入不合法，请重新输入", Toast.LENGTH_SHORT).show();
+        }
+
+      }
+    });
+
+    mCLearBtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        total = "0.00";
+        mTotalExpense.setText("¥" + total);
+        SpUtils.INSTANCE.putString("total", "0.00", getApplicationContext());
+        for(int i = 0; i < classes.length; i++){
+          SpUtils.INSTANCE.putString(classes[i], "0.00", getApplicationContext());
+        }
+      }
+    });
+
+    mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        currentItem = classes[i];
+
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> adapterView) {
+
+      }
+    });
+
+
   }
+
+
+
+
 }

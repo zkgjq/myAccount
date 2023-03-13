@@ -9,7 +9,7 @@
   <androidx.constraintlayout.widget.ConstraintLayout
     android:id="@+id/expense_card"
     android:layout_width="374dp"
-    android:layout_height="202dp"
+    android:layout_height="118dp"
     android:layout_marginTop="30dp"
     android:background="@drawable/card"
     app:layout_constraintLeft_toLeftOf="parent"
@@ -44,25 +44,52 @@
       app:layout_constraintLeft_toLeftOf="@id/expense_card"
       app:layout_constraintTop_toBottomOf="@id/title_1"></TextView>
 
+    <android.widget.Button
+      android:id="@+id/clearBtn"
+      android:layout_width="100dp"
+      android:layout_height="50dp"
+      android:layout_marginBottom="3dp"
+      android:layout_marginRight="5dp"
+      android:background="@drawable/btn"
+      android:text="清零"
+      android:textColor="@color/white"
+      android:textSize="18sp"
+      app:layout_constraintBottom_toBottomOf="@id/expense_card"
+      app:layout_constraintRight_toRightOf="@id/expense_card"></android.widget.Button>
+
   </androidx.constraintlayout.widget.ConstraintLayout>
 
   <EditText
     android:id="@+id/inputText"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginTop="100dp"
+    android:layout_marginTop="40dp"
     android:hint="请输入金额"
-    android:visibility="invisible"
+    android:inputType="numberDecimal"
+    android:maxLines="1"
     android:textAlignment="center"
+    android:visibility="invisible"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toBottomOf="@id/expense_card"></EditText>
+
+  <Spinner
+    android:id="@+id/classes_spinner"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:entries="@array/spinnerclass"
+    android:spinnerMode="dropdown"
+    android:visibility="invisible"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/inputText"></Spinner>
 
   <android.widget.Button
     android:id="@+id/ensureBtn"
     android:layout_width="80dp"
     android:layout_height="40dp"
-    android:layout_marginTop="3dp"
+    android:layout_marginTop="20dp"
     android:background="@drawable/btn"
     android:text="确认"
     android:textColor="@color/white"
@@ -70,7 +97,7 @@
     android:visibility="invisible"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/inputText"></android.widget.Button>
+    app:layout_constraintTop_toBottomOf="@id/classes_spinner"></android.widget.Button>
 
   <android.widget.Button
     android:id="@+id/add_btn"
