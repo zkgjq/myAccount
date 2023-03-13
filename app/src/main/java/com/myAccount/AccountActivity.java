@@ -1,5 +1,6 @@
 package com.myAccount;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -26,6 +27,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.myAccount.adapter.Expense;
 import com.myAccount.adapter.ExpenseAdapter;
 import com.myAccount.utils.SpUtils;
@@ -87,6 +90,7 @@ public class AccountActivity extends AppCompatActivity {
   private void initView() {
     total = SpUtils.INSTANCE.getString("total", getApplicationContext());
     mTotalExpense.setText("¥" + total);
+
     food = SpUtils.INSTANCE.getString("food", getApplicationContext());
     taobao = SpUtils.INSTANCE.getString("taobao", getApplicationContext());
     traffic = SpUtils.INSTANCE.getString("traffic", getApplicationContext());
@@ -99,6 +103,13 @@ public class AccountActivity extends AppCompatActivity {
     mRecyclerView.setLayoutManager(linearLayoutManager);
     expenseAdapter = new ExpenseAdapter(dataset);
     mRecyclerView.setAdapter(expenseAdapter);
+    String json = SpUtils.INSTANCE.getString("detail", getApplicationContext());
+    Type type = new TypeToken<List<String>>(){}.getType();
+    List<String> yourList = new Gson().fromJson(json, type);
+    for(int i = 0; i < yourList.size(); i++){
+      dataset.add(yourList.get(i));
+    }
+    expenseAdapter.notifyDataSetChanged();
 
   }
 
@@ -129,9 +140,9 @@ public class AccountActivity extends AppCompatActivity {
               Toast.LENGTH_SHORT).show();
           mTotalExpense.setText("¥" + total);
           SpUtils.INSTANCE.putString(currentItem, currentNum, getApplicationContext());
-          String detail = Utils.INSTANCE.getCurrentTime() + " " + currentItem + " ¥" + currentNum;
-          SpUtils.INSTANCE.putString("detail",detail, getApplicationContext() );
+          String detail = Utils.INSTANCE.getCurrentTime() + " - " + currentItem + " - ¥" + currentNum;
           dataset.add(detail);
+          SpUtils.INSTANCE.putString("detail", new Gson().toJson(dataset), getApplicationContext());
           expenseAdapter.notifyDataSetChanged();
           if (imm != null) {
             mEditText.setText("");
