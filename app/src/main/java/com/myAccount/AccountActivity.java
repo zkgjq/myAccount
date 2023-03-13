@@ -167,6 +167,9 @@ public class AccountActivity extends AppCompatActivity {
         for (int i = 0; i < classes.length; i++) {
           SpUtils.INSTANCE.putString(classes[i], "0.00", getApplicationContext());
         }
+        SpUtils.INSTANCE.putString("detail", "", getApplicationContext());
+        dataset.clear();
+        expenseAdapter.notifyDataSetChanged();
       }
     });
 
