@@ -89,7 +89,12 @@ public class AccountActivity extends AppCompatActivity {
 
   private void initView() {
     total = SpUtils.INSTANCE.getString("total", getApplicationContext());
-    mTotalExpense.setText("¥" + total);
+    if(total == null){
+      total = "0.00";
+      mTotalExpense.setText("¥0.00");
+    }
+      mTotalExpense.setText("¥" + total);
+
 
     food = SpUtils.INSTANCE.getString("food", getApplicationContext());
     taobao = SpUtils.INSTANCE.getString("taobao", getApplicationContext());
@@ -106,8 +111,10 @@ public class AccountActivity extends AppCompatActivity {
     String json = SpUtils.INSTANCE.getString("detail", getApplicationContext());
     Type type = new TypeToken<List<String>>(){}.getType();
     List<String> yourList = new Gson().fromJson(json, type);
-    for(int i = 0; i < yourList.size(); i++){
-      dataset.add(yourList.get(i));
+    if(yourList != null && yourList.size() != 0){
+      for(int i = 0; i < yourList.size(); i++){
+        dataset.add(yourList.get(i));
+      }
     }
     expenseAdapter.notifyDataSetChanged();
 
